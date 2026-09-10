@@ -132,10 +132,12 @@ PodStatusNotifier/
 ## Dependencies
 
 | Library | Version | Purpose |
-|---|---|---|
-| SnakeYAML | 2.2 | Parse `~/.kube/config` |
-| Batik Transcoder | 1.17 | Render SVG icon for system tray |
-| Batik Codec | 1.17 | Batik image codec support |
+|---|---------|---|
+| SnakeYAML | 2.2     | Parse `~/.kube/config` |
+| Batik Transcoder | 1.17    | Render SVG icon for system tray |
+| Batik Codec | 1.17    | Batik image codec support |
+| SLF4J | 2.0.13  | Logging purpose |
+| Logback Classic | 1.5.13  | Logging Purpose | 
 
 ---
 
