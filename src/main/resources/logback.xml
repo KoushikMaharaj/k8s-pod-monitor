@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="60 seconds">
+
+    <!-- Resolved at runtime via Logger.init() → System.setProperty("psn.log.dir", ...) -->
+    <property name="LOG_HOME" value="${user.home}/PodStatusNotifier/logs"/>
+
+    <!-- ── Patterns ─────────────────────────────────────────────────────────── -->
+    <property name="APP_PATTERN" value="[%d{yyyy-MM-dd HH:mm:ss}] [%-5level] [%thread] %msg%n%ex"/>
+    <property name="POD_PATTERN" value="[%d{yyyy-MM-dd HH:mm:ss}] [%-5level] %msg%n"/>
+
+    <!-- ── Appenders ────────────────────────────────────────────────────────── -->
+
+    <!-- Console -->
+    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${APP_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Application log: startup, config, lifecycle, errors -->
+    <appender name="AppFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_HOME}/app.log</file>
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy"> <!-- Daily rollover, gzip compressed -->
+            <fileNamePattern>${LOG_HOME}/app-%d{yyyy-MM-dd}.log.gz</fileNamePattern> <!-- Keep 30 days -->
+            <maxHistory>30</maxHistory>
+            <!-- Cap total log size at 500 MB -->
+            <totalSizeCap>500MB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${APP_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Pod status log: kubectl output, pod counts, alerts -->
+    <appender name="PodFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/pod-status-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${POD_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- ── Loggers ───────────────────────────────────────────────────────────── -->
+
+    <!-- Pod logger — writes ONLY to pod-status.log, not app.log -->
+    <logger name="com.example.podmonitor.pod" level="DEBUG" additivity="false">
+        <appender-ref ref="PodFile"/>
+    </logger>
+
+    <!-- Root — everything else goes to app.log + console -->
+    <root level="INFO">
+        <appender-ref ref="AppFile"/>
+        <appender-ref ref="Console"/>
+    </root>
+
+</configuration>

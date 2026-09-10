@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <!-- Dark Container Frame -->
+  <rect width="32" height="32" rx="8" fill="#1E293B" />
+  
+  <!-- Pod / Cube Top Facet -->
+  <path d="M16 6 L24 10.5 L16 15 L8 10.5 Z" fill="#38BDF8" opacity="0.9" />
+  
+  <!-- Pod / Cube Left Facet -->
+  <path d="M8 12.5 L16 17 V25 L8 20.5 Z" fill="#2563EB" />
+  
+  <!-- Pod / Cube Right Facet -->
+  <path d="M24 12.5 L16 17 V25 L24 20.5 Z" fill="#1D4ED8" />
+  
+  <!-- Live Health Beacon Badge -->
+  <circle cx="23" cy="9" r="4.5" fill="#1E293B" />
+  <circle cx="23" cy="9" r="3" fill="#22C55E" />
+</svg>
