@@ -9,15 +9,14 @@ on:
   workflow_dispatch:
 
 jobs:
-
-  # ── Windows (.exe via jpackage app-image) ───────────────────────────────────
+  # ── Windows Installer (.exe via jpackage) ──────────────────────────────────
   build-windows:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
@@ -26,32 +25,37 @@ jobs:
       - name: Build fat JAR
         run: mvn clean package -DskipTests
 
-      - name: Create Windows app-image
+      - name: Prepare jpackage input directory
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path target/package-input
+          Copy-Item "target/pod-status-notifier-1.0.0.jar" -Destination "target/package-input"
+
+      - name: Create Windows Installer
+        shell: pwsh
         run: |
           jpackage `
-            --type app-image `
-            --input target `
+            --type exe `
+            --input target/package-input `
             --name PodStatusNotifier `
             --main-jar pod-status-notifier-1.0.0.jar `
             --main-class com.example.podmonitor.PodStatusNotifier `
             --app-version 1.0.0 `
             --dest dist `
             --java-options "-Xmx256m" `
-            --win-console
+            --win-console `
+            --win-shortcut `
+            --win-menu `
+            --win-dir-chooser
 
-      - name: Zip Windows app
-        shell: pwsh
-        run: |
-          Compress-Archive -Path dist/PodStatusNotifier -DestinationPath dist/PodStatusNotifier-Windows.zip
-
-      - name: Upload Windows artifact
+      - name: Upload Windows Installer Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: PodStatusNotifier-Windows
-          path: dist/PodStatusNotifier-Windows.zip
+          name: PodStatusNotifier-Installer
+          path: dist/*.exe
           retention-days: 30
 
-  # ── Release ──────────────────────────
+  # ── Release ─────────────────────────────────────────────────────────────────
   release:
     needs: [ build-windows ]
     runs-on: ubuntu-latest
@@ -74,13 +78,11 @@ jobs:
           body: |
             ## Pod Status Notifier ${{ github.ref_name }}
 
-            Native executables for all platforms — no Java installation required.
+            Native installer for Windows — no Java installation required.
 
-            | Platform | File | How to run |
-            |----------|------|-----------|
-            | Windows  | `PodStatusNotifier-Windows.zip` | Extract → run `PodStatusNotifier/PodStatusNotifier.exe` |
-
-          files: |
-            dist/PodStatusNotifier-Windows.zip
+            | Platform | File | Installation |
+            |----------|------|--------------|
+            | Windows  | `PodStatusNotifier-1.0.0.exe` | Run the installer to install the app and create desktop/start shortcuts. |
+          files: dist/*.exe
           draft: false
           prerelease: false
