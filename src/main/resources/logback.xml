@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true" scanPeriod="60 seconds">
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener" />
 
     <!-- Resolved at runtime via Logger.init() → System.setProperty("psn.log.dir", ...) -->
     <property name="LOG_HOME" value="${user.home}/PodStatusNotifier/logs"/>
@@ -11,11 +12,11 @@
     <!-- ── Appenders ────────────────────────────────────────────────────────── -->
 
     <!-- Console -->
-    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>${APP_PATTERN}</pattern>
-        </encoder>
-    </appender>
+<!--    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">-->
+<!--        <encoder>-->
+<!--            <pattern>${APP_PATTERN}</pattern>-->
+<!--        </encoder>-->
+<!--    </appender>-->
 
     <!-- Application log: startup, config, lifecycle, errors -->
     <appender name="AppFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -53,7 +54,7 @@
     <!-- Root — everything else goes to app.log + console -->
     <root level="INFO">
         <appender-ref ref="AppFile"/>
-        <appender-ref ref="Console"/>
+<!--        <appender-ref ref="Console"/>-->
     </root>
 
 </configuration>
