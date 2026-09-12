@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true" scanPeriod="60 seconds">
-
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener" />
     <!-- Resolved at runtime via Logger.init() → System.setProperty("psn.log.dir", ...) -->
     <property name="LOG_HOME" value="${user.home}/PodStatusNotifier/logs"/>
 
